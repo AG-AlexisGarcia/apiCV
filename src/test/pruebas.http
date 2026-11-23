@@ -1,0 +1,90 @@
+### 1. CONSULTAR TODOS LOS CVs (GET - 200 OK)
+GET http://localhost:8080/api/cvs
+
+### 2. CONSULTAR CV COMPLETO DE UN ALUMNO (GET - 200 OK)
+# Devuelve alumno + cabecera + listas de experiencias, formaciones y aptitudes
+GET http://localhost:8080/api/cvs/alumno/1
+
+### 3. CONSULTAR CV POR ID (GET - 200 OK)
+GET http://localhost:8080/api/cvs/1
+
+### 4. ACTUALIZAR CABECERA DEL CV (PUT - 200 OK)
+PUT http://localhost:8080/api/cvs/1
+Content-Type: application/json
+
+{
+  "alumnoId": 1,
+  "tituloProfesional": "Desarrollador Web Full-Stack (Java & Angular)",
+  "resumen": "Estudiante de 2º DAW en Colegio Altair con experiencia en APIs REST con Spring Boot y PostgreSQL."
+}
+
+### 5. AÑADIR UNA EXPERIENCIA AL CV (POST - 201 Created)
+POST http://localhost:8080/api/cvs/1/experiencias
+Content-Type: application/json
+
+{
+  "puesto": "Agente Comercial Telefónico",
+  "empresa": "Transcom",
+  "fechaInicio": "2026-07-06",
+  "fechaFin": "2026-09-04",
+  "descripcion": "Gestión de campañas comerciales y atención al cliente."
+}
+
+### 6. AÑADIR UNA FORMACIÓN AL CV (POST - 201 Created)
+# Prueba el campo esReglada (true = oficial / false = curso complementario)
+POST http://localhost:8080/api/cvs/1/formaciones
+Content-Type: application/json
+
+{
+  "titulo": "Certificación de Inglés B2",
+  "centro": "Cambridge",
+  "anioFin": 2026,
+  "esReglada": false
+}
+
+### 7. AÑADIR UNA APTITUD AL CV (POST - 201 Created)
+POST http://localhost:8080/api/cvs/1/aptitudes
+Content-Type: application/json
+
+{
+  "nombre": "PostgreSQL",
+  "nivel": "Intermedio"
+}
+
+### 8. ELIMINAR LA EXPERIENCIA RECIÉN CREADA (DELETE - 204 No Content)
+# Ajusta el último número si el ID devuelto en el paso 5 fue distinto de 2
+DELETE http://localhost:8080/api/cvs/1/experiencias/2
+
+### 9. ELIMINAR LA FORMACIÓN RECIÉN CREADA (DELETE - 204 No Content)
+DELETE http://localhost:8080/api/cvs/1/formaciones/3
+
+### 10. ELIMINAR LA APTITUD RECIÉN CREADA (DELETE - 204 No Content)
+DELETE http://localhost:8080/api/cvs/1/aptitudes/3
+
+### 11. PROBAR ERROR 409 CONFLICT (Alumno 1 ya tiene CV)
+POST http://localhost:8080/api/cvs
+Content-Type: application/json
+
+{
+  "alumnoId": 1,
+  "tituloProfesional": "CV Duplicado",
+  "resumen": "Esto debe devolver 409 Conflict con ProblemDetail."
+}
+
+### 12. PROBAR ERROR 404 NOT FOUND (CV inexistente)
+GET http://localhost:8080/api/cvs/999
+
+### 13. ELIMINAR CV COMPLETO (DELETE - 204 No Content)
+# Borra el CV 1 y en cascada sus experiencias, formaciones y aptitudes (mantiene al Alumno 1)
+DELETE http://localhost:8080/api/cvs/1
+
+### 14. CREAR UN NUEVO CV PARA EL ALUMNO 1 (POST - 201 Created)
+# Ejecuta esto DESPUÉS del paso 13 para probar la creación limpia
+POST http://localhost:8080/api/cvs
+Content-Type: application/json
+
+{
+  "alumnoId": 1,
+  "tituloProfesional": "Junior Backend Developer",
+  "resumen": "CV recreado correctamente desde la API REST."
+}
